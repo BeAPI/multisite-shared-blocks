@@ -1,0 +1,101 @@
+$gray: #adb2ad;
+$background: #fff;
+$text-color: #444;
+$blue: #3875D7;
+$light-gray: #fafafa;
+$system-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+
+.shared-block-placeholder {
+    padding: 1em 2em !important;
+    border: 2px dashed $gray;
+    background-color: $background !important;
+    box-shadow: none !important;
+}
+
+.shared-block-selector {
+    display: flex;
+    flex-direction: column;
+    border-radius: 2px;
+    box-shadow: inset 0 0 0 1px $gray;
+
+    &__filters {
+        display: flex;
+        align-content: center;
+        flex-direction: row;
+        padding: 1.2em 0 1em 0;
+        border: 1px solid $gray;
+        border-radius: 2px 2px 0 0;
+        background: $background;
+
+        & .filter {
+            min-width: 25%;
+        }
+
+        .components-input-control__label,
+        .components-base-control__label {
+            font-weight: bold;
+            line-height: 1.2;
+            z-index: 1;
+            display: block;
+            overflow: hidden;
+            box-sizing: border-box;
+            max-width: 100%;
+            margin: 0px;
+            padding-top: 0px;
+            padding-bottom: 4px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            color: $text-color !important;
+        }
+
+    }
+
+    & .shared-block-selector__results {
+        padding: 1px;
+        .results__item button {
+            width: 100%;
+            padding: 8px 10px;
+            border-bottom: 1px solid #EEEEEE;
+            text-decoration: none;
+            color: $text-color;
+
+            &:hover,
+            &:focus {
+                color: white;
+                border-bottom: 1px solid $blue;
+                background: $blue;
+            }
+        }
+
+        .no-results {
+            display: block;
+            height: 300px;
+            color: black;
+            font-family: $system-font;
+            background-color: $light-gray;
+            padding: 5px;
+        }
+    }
+}
+
+.shared-block-selector-wrapper {
+    &__cancel {
+        display: flex;
+        align-content: center;
+        flex-direction: row;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        padding: 8px 16px;
+        border: 1px solid #eee;
+        background-color: #fef8ee;
+
+        &--message {
+            font-family: $system-font;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            margin: 0 10px 0 0;
+            color: black;
+        }
+    }
+}

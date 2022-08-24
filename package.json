@@ -1,0 +1,44 @@
+{
+  "name": "multisite-shared-blocks",
+  "version": "1.0.0",
+  "description": "Share blocks between network's sites.",
+  "main": "build/index.js",
+  "scripts": {
+    "start": "wp-scripts start",
+    "build": "wp-scripts build",
+    "format": "wp-scripts format",
+    "lint:css": "wp-scripts lint-style",
+    "lint:js": "wp-scripts lint-js",
+    "packages-update": "wp-scripts packages-update",
+    "env": "wp-env",
+    "env:start": "wp-env start",
+    "env:stopt": "wp-env stop",
+    "env:reset": "wp-env clean",
+    "env:install": "wp-env run cli \"wp db reset --yes\" && wp-env run cli \"wp core multisite-install --title='Multisite Shared Blocks' --admin_user='admin' --admin_password='password' --admin_email='user@example.com'\" && wp-env run cli \"wp plugin activate multisite-shared-blocks --network\" && wp-env run cli \"wp site create --slug=site-one\"",
+    "pretest:php": "wp-env start",
+    "test:php": "wp-env run tests-wordpress /var/www/html/wp-content/plugins/multisite-shared-blocks/vendor/bin/phpunit -c /var/www/html/wp-content/plugins/multisite-shared-blocks/phpunit.xml.dist --verbose"
+  },
+  "author": "Be API Technical team",
+  "license": "GPL-2.0-or-later",
+  "dependencies": {
+    "@wordpress/block-editor": "^9.7.0",
+    "@wordpress/blocks": "^11.14.0",
+    "@wordpress/components": "^19.17.0",
+    "@wordpress/compose": "^5.13.0",
+    "@wordpress/core-data": "^4.13.0",
+    "@wordpress/data": "^6.15.0",
+    "@wordpress/element": "^4.13.0",
+    "@wordpress/hooks": "^3.15.0",
+    "@wordpress/i18n": "^4.15.0",
+    "@wordpress/icons": "^9.6.0",
+    "@wordpress/wordcount": "^3.15.0",
+    "lodash": "^4.17.21",
+    "react-infinite-scroll-component": "^6.1.0",
+    "use-constant": "^1.1.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@wordpress/env": "^5.2.0",
+    "@wordpress/scripts": "^23.7.2"
+  }
+}

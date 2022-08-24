@@ -1,0 +1,18 @@
+{
+  "phpVersion": "7.3",
+  "config": {
+    "APACHE_PORT": 8888
+  },
+  "mappings": {
+    "./.htaccess": "./config/wordpress/.htaccess",
+    "wp-content/mu-plugins/ms-custom-ports.php": "./config/mu-plugins/ms-custom-ports.php",
+    "wp-content/plugins/multisite-shared-blocks": "."
+  },
+  "env": {
+    "tests": {
+      "config": {
+        "APACHE_PORT": 8889
+      }
+    }
+  }
+}
