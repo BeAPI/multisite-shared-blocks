@@ -14,12 +14,5 @@
         <directory name="includes"/>
         <directory name="views"/>
         <file name="multisite-shared-blocks.php"/>
-        <ignoreFiles>
-            <directory name="build"/>
-            <directory name="node_modules"/>
-            <directory name="src"/>
-            <directory name="tools"/>
-            <directory name="vendor"/>
-        </ignoreFiles>
     </projectFiles>
 </psalm>
