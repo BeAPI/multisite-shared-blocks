@@ -50,6 +50,10 @@ function init_multisite_shared_blocks_plugin(): void {
 	\Beapi\MultisiteSharedBlocks\Listener::get_instance();
 	\Beapi\MultisiteSharedBlocks\Rest\Rest::get_instance();
 
+	if ( is_admin() ) {
+		\Beapi\MultisiteSharedBlocks\Admin\Main::get_instance();
+	}
+
 	if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		\WP_CLI::add_command( 'multisite-shared-blocks', \Beapi\MultisiteSharedBlocks\Cli::class );
 	}

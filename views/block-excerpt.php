@@ -8,6 +8,10 @@
  *      @type string $original_post_permalink
  * }
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	die( '-1' );
+}
 ?>
 <p><?php echo esc_html( (string) $args['block_excerpt'] ); ?></p>
 <p>
