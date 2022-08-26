@@ -5,16 +5,24 @@ namespace Beapi\MultisiteSharedBlocks\Admin;
 use Beapi\MultisiteSharedBlocks\Query;
 use Beapi\MultisiteSharedBlocks\SharedBlockDto;
 
+/**
+ * Class SharedBlocksListTable is use to render the shared blocks list table.
+ *
+ * @package Beapi\MultisiteSharedBlocks\Admin
+ */
 class SharedBlocksListTable extends \WP_List_Table {
 
-	public function ajax_user_can() {
+	/**
+	 * @inheritDoc
+	 */
+	public function ajax_user_can(): bool {
 		return false;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function get_columns() {
+	public function get_columns(): array {
 		return [
 			'block' => _x( 'Block', 'Column name', 'multisite-shared-blocks' ),
 			'post'  => _x( 'Post', 'Column name', 'multisite-shared-blocks' ),
@@ -25,7 +33,7 @@ class SharedBlocksListTable extends \WP_List_Table {
 	/**
 	 * @inheritDoc
 	 */
-	public function prepare_items() {
+	public function prepare_items(): void {
 		$this->_column_headers = [
 			apply_filters( "manage_{$this->screen->id}_columns", $this->get_columns() ),
 			[],
@@ -62,8 +70,7 @@ class SharedBlocksListTable extends \WP_List_Table {
 	 *
 	 * @return void
 	 */
-	public function column_block( $item ) {
-
+	public function column_block( SharedBlockDto $item ): void {
 		echo '<strong>';
 		echo esc_html( $item->get_block_title() );
 		echo '</strong>';
@@ -76,7 +83,7 @@ class SharedBlocksListTable extends \WP_List_Table {
 	 *
 	 * @return void
 	 */
-	public function column_post( $item ) {
+	public function column_post( SharedBlockDto $item ): void {
 		$did_switch = false;
 		if ( get_current_blog_id() !== $item->get_site_id() ) {
 			$did_switch = true;
@@ -101,7 +108,7 @@ class SharedBlocksListTable extends \WP_List_Table {
 	 *
 	 * @return void
 	 */
-	public function column_site( $item ) {
+	public function column_site( SharedBlockDto $item ): void {
 
 		echo '<strong>';
 		echo sprintf(
@@ -115,8 +122,7 @@ class SharedBlocksListTable extends \WP_List_Table {
 	/**
 	 * @inheritDoc
 	 */
-	protected function get_views() {
-
+	protected function get_views(): array {
 		//phpcs:disable WordPress.Security.NonceVerification.Recommended
 		return [
 			'all'          => sprintf(
@@ -145,13 +151,6 @@ class SharedBlocksListTable extends \WP_List_Table {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	protected function get_bulk_actions() {
-		return [];
-	}
-
-	/**
 	 * Generates and display row actions links for the list table.
 	 *
 	 * @param \WP_Post $post The item being acted upon.
@@ -168,7 +167,7 @@ class SharedBlocksListTable extends \WP_List_Table {
 	/**
 	 * @inheritDoc
 	 */
-	protected function display_tablenav( $which ) {
+	protected function display_tablenav( $which ): void {
 		?>
 		<div class="tablenav <?php echo esc_attr( $which ); ?>">
 			<?php
