@@ -77,7 +77,7 @@ final class SharedBlock {
 		// When displaying full content, just return the rendered content.
 		if ( 'full' === $display ) {
 			/**
-			 * Filters if dependencies generated during the shared block rendering should be enqueued or not on
+			 * Filters if dependencies for the blocks contain in the shared block should be enqueued or not on
 			 * the current site.
 			 *
 			 * @since 1.0.0
@@ -86,14 +86,22 @@ final class SharedBlock {
 			 */
 			$skip_dependencies = apply_filters( 'multisite_shared_block_skip_block_dependencies', false );
 
-			$block_dependencies = $block_data['block_dependencies'] ?? [];
-			if ( ! empty( $block_dependencies ) && ! $skip_dependencies ) {
-				if ( ! empty( $block_dependencies['styles'] ) ) {
-					array_map( 'wp_enqueue_style', $block_dependencies['styles'] );
-				}
+			$use_block_types = $block_data['use_block_types'] ?? [];
+			$block_registry  = \WP_Block_Type_Registry::get_instance();
+			if ( ! $skip_dependencies && ! empty( $use_block_types ) && null !== $block_registry ) {
+				foreach ( $use_block_types as $block_type_name ) {
+					$block_type = $block_registry->get_registered( $block_type_name );
+					if ( null === $block_type ) {
+						continue;
+					}
 
-				if ( ! empty( $block_dependencies['scripts'] ) ) {
-					array_map( 'wp_enqueue_script', $block_dependencies['scripts'] );
+					if ( null !== $block_type->script ) {
+						wp_enqueue_script( $block_type->script );
+					}
+
+					if ( null !== $block_type->style ) {
+						wp_enqueue_style( $block_type->style );
+					}
 				}
 			}
 
@@ -108,7 +116,7 @@ final class SharedBlock {
 			$skip_support_styles = apply_filters( 'multisite_shared_block_skip_block_support_styles', false );
 
 			$block_support_styles = $block_data['block_support_styles'] ?? '';
-			if ( ! empty( $block_support_styles ) && ! $skip_support_styles ) {
+			if ( ! $skip_support_styles && ! empty( $block_support_styles ) ) {
 				$action_hook_name = Helpers::get_block_support_styles_hook_name();
 				add_action(
 					$action_hook_name,
@@ -234,7 +242,7 @@ final class SharedBlock {
 	 * @param string $block_id block id.
 	 *
 	 * @return array rendered block data.
-	 * @psalm-return array{html: string, block_dependencies: array{styles: string[], scripts: string[]}, block_support_styles:string, post_title:string, post_permalink:string}
+	 * @psalm-return array{html: string, use_block_types: string[], block_support_styles:string, post_title:string, post_permalink:string}
 	 */
 	private function get_rendered_block( int $site_id, int $post_id, string $block_id ): array {
 		// Get data from cache.
@@ -245,10 +253,7 @@ final class SharedBlock {
 
 		$block_data = [
 			'html'                 => '',
-			'block_dependencies'   => [
-				'styles'  => [],
-				'scripts' => [],
-			],
+			'use_block_types'      => [],
 			'block_support_styles' => '',
 			'post_title'           => '',
 			'post_permalink'       => '',
@@ -259,7 +264,7 @@ final class SharedBlock {
 			sprintf( '/multisite-shared-blocks/v1/renderer/%d/%s', $post_id, $block_id )
 		);
 
-		$response = wp_remote_get( $rest_url );
+		$response = wp_safe_remote_get( $rest_url );
 		if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
 			return $block_data;
 		}
@@ -275,10 +280,7 @@ final class SharedBlock {
 		$block_data = wp_parse_args(
 			[
 				'html'                 => $parsed_json['rendered'] ?? '',
-				'block_dependencies'   => [
-					'styles'  => $parsed_json['block_dependencies']['styles'] ?? [],
-					'scripts' => $parsed_json['block_dependencies']['scripts'] ?? [],
-				],
+				'use_block_types'      => $parsed_json['use_block_types'] ?? [],
 				'block_support_styles' => $parsed_json['block_support_styles'] ?? '',
 				'post_title'           => $parsed_json['post']['title'] ?? '',
 				'post_permalink'       => $parsed_json['post']['link'] ?? '',

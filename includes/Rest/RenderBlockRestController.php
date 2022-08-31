@@ -14,6 +14,15 @@ use Beapi\MultisiteSharedBlocks\Parser;
 class RenderBlockRestController extends \WP_REST_Controller {
 
 	/**
+	 * Store block types used during the rendering of a shared block.
+	 *
+	 * @var array
+	 *
+	 * @access private
+	 */
+	public $rendered_block_types = [];
+
+	/**
 	 * RenderBlockRestController constructor.
 	 */
 	public function __construct() {
@@ -87,14 +96,16 @@ class RenderBlockRestController extends \WP_REST_Controller {
 		$GLOBALS['post'] = $shared_block_post; //phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		setup_postdata( $shared_block_post );
 
+		$this->setup_use_block_types_capture();
 		$this->setup_block_support_styles_capture();
 
 		/** This filter is documented in wp-includes/post-template.php */
 		$block_render = apply_filters( 'the_content', render_block( $shared_block_data ) );
 
-		$block_dependencies = $this->capture_block_dependencies();
+		// Get list of block types used while rendering the shared block.
+		$use_block_types = $this->capture_use_block_types();
 
-		// Check for block support styles we should send in the response with the block html.
+		// Get block support styles generated while rendering the shared block.
 		$block_support_styles = $this->capture_block_support_styles();
 
 		// Replace dynamically generated container CSS classes in block HML content and CSS rules to avoid collision
@@ -113,7 +124,7 @@ class RenderBlockRestController extends \WP_REST_Controller {
 				'link'  => get_permalink(),
 			],
 			'rendered'             => $block_render,
-			'block_dependencies'   => $block_dependencies,
+			'use_block_types'      => $use_block_types,
 			'block_support_styles' => $block_support_styles,
 		];
 
@@ -161,31 +172,17 @@ class RenderBlockRestController extends \WP_REST_Controller {
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
+				'use_block_types'      => [
+					'description' => __( 'Block types rendered by the shared block.', 'multisite-shared-blocks' ),
+					'type'        => 'array',
+					'context'     => [ 'view' ],
+					'readonly'    => true,
+				],
 				'block_support_styles' => [
 					'description' => __( "Shared block's inline CSS style.", 'multisite-shared-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
-				],
-				'block_dependencies'   => [
-					'description' => __( "Shared block's assets dependencies.", 'multisite-shared-blocks' ),
-					'type'        => 'array',
-					'context'     => [ 'view' ],
-					'readonly'    => true,
-					'properties'  => [
-						'scripts' => [
-							'description' => __( "Shared block's scripts dependencies.", 'multisite-shared-blocks' ),
-							'type'        => 'array',
-							'context'     => [ 'view' ],
-							'readonly'    => true,
-						],
-						'styles'  => [
-							'description' => __( "Shared block's styles dependencies.", 'multisite-shared-blocks' ),
-							'type'        => 'array',
-							'context'     => [ 'view' ],
-							'readonly'    => true,
-						],
-					],
 				],
 			],
 		];
@@ -316,23 +313,38 @@ class RenderBlockRestController extends \WP_REST_Controller {
 	}
 
 	/**
-	 * Get dependencies registered during the rendering of the shared block.
+	 * Setup hook to catch each block being rendered and store their name.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @global \WP_Scripts $wp_scripts The WP_Scripts object for printing scripts.
-	 * @global \WP_Styles  $wp_styles  The WP_Styles object for printing styles.
+	 * @return void
+	 */
+	private function setup_use_block_types_capture(): void {
+		$this->rendered_block_types = [];
+		$instance                   = $this;
+
+		add_filter(
+			'pre_render_block',
+			function ( ?string $html, array $block ) use ( $instance ) {
+				if ( ! empty( $block['blockName'] ) ) {
+					$instance->rendered_block_types[ $block['blockName'] ] = 1;
+				}
+
+				return $html;
+			},
+			1,
+			2
+		);
+	}
+
+	/**
+	 * Return the list of block types stored will rendering the shared block.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @return array
-	 * @psalm-return array{styles:string[], scripts:string[]}
 	 */
-	private function capture_block_dependencies(): array {
-		global $wp_scripts;
-		global $wp_styles;
-
-		return [
-			'styles'  => $wp_styles->queue,
-			'scripts' => $wp_scripts->queue,
-		];
+	private function capture_use_block_types(): array {
+		return array_filter( array_keys( $this->rendered_block_types ) );
 	}
 }
