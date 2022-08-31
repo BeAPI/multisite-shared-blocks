@@ -12,7 +12,7 @@
     "packages-update": "wp-scripts packages-update",
     "env": "wp-env",
     "env:start": "wp-env start",
-    "env:stopt": "wp-env stop",
+    "env:stop": "wp-env stop",
     "env:reset": "wp-env clean",
     "env:install": "wp-env run cli \"wp db reset --yes\" && wp-env run cli \"wp core multisite-install --title='Multisite Shared Blocks' --admin_user='admin' --admin_password='password' --admin_email='user@example.com'\" && wp-env run cli \"wp plugin activate multisite-shared-blocks --network\" && wp-env run cli \"wp site create --slug=site-one\"",
     "pretest:php": "wp-env start",
