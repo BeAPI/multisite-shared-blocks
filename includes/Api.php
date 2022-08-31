@@ -81,6 +81,41 @@ final class Api {
 	}
 
 	/**
+	 * Get a shared block by ID.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $record_id the shared block record ID.
+	 *
+	 * @global \wpdb $wpdb WordPress database abstraction object.
+	 *
+	 * @return SharedBlockDto|null
+	 */
+	public function get_by_id( int $record_id ): ?SharedBlockDto {
+		global $wpdb;
+
+		$table_name = Database::SHARED_BLOCKS_INDEX_TABLE_NAME;
+
+		//phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		/** @var \stdClass|null $record */
+		$record = $wpdb->get_row(
+		/** @psalm-suppress TooManyArguments */
+			$wpdb->prepare(
+				"
+				SELECT * from {$wpdb->$table_name}
+				WHERE 1=1
+				AND id = %d
+				LIMIT 1
+				",
+				$record_id
+			)
+		);
+		//phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		return ! empty( $record ) ? SharedBlockDto::from_record( $record ) : null;
+	}
+
+	/**
 	 * Get all shared blocks for a post.
 	 *
 	 * @since 1.0.0
