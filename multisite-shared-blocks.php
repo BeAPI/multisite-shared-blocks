@@ -49,6 +49,7 @@ function init_multisite_shared_blocks_plugin(): void {
 	\Beapi\MultisiteSharedBlocks\Blocks\SharedBlock::get_instance();
 	\Beapi\MultisiteSharedBlocks\Listener::get_instance();
 	\Beapi\MultisiteSharedBlocks\Rest\Rest::get_instance();
+	\Beapi\MultisiteSharedBlocks\Preview::get_instance();
 
 	if ( is_admin() ) {
 		\Beapi\MultisiteSharedBlocks\Admin\Main::get_instance();
