@@ -6,6 +6,10 @@
  * @var int $post_id
  * @var string $block_id
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	die( '-1' );
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -18,8 +22,8 @@
 	$blocks = parse_blocks(
 		sprintf(
 			'<!-- wp:multisite-shared-blocks/shared-block {"siteId":%s,"postId":%s,"blockId":"%s","blockTitle":""} /-->',
-			(int) $site_id,
-			(int) $post_id,
+			absint( $site_id ),
+			absint( $post_id ),
 			sanitize_text_field( $block_id )
 		)
 	);

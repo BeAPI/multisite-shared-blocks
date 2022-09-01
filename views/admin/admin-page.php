@@ -22,7 +22,7 @@ $list->prepare_items();
 	if ( ! empty( $_GET['s'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		echo '<span class="subtitle">';
 		printf(
-		/* translators: %s: Search query. */
+			/* translators: %s: Search query. */
 			esc_html__( 'Search results for: %s', 'default' ),
 			'<strong>' . esc_html( (string) $_GET['s'] ) . '</strong>' //phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		);
@@ -31,8 +31,8 @@ $list->prepare_items();
 	?>
 	<form id="posts-filter" method="get">
 		<input type="hidden" name="page" value="multisite-shared-blocks">
-		<?php if ( isset( $_GET['current_site'] ) ) : //phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
-			<input type="hidden" name="current_site" value="1">
+		<?php if ( isset( $_GET['on_current_site'] ) ) : //phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
+			<input type="hidden" name="on_current_site" value="1">
 		<?php endif; ?>
 		<?php
 		$list->search_box( __( 'Search', 'multisite-shared-blocks' ), 'shared-block-search' );
