@@ -70,7 +70,7 @@ class SearchRestController extends \WP_REST_Controller {
 			}
 
 			$data['full_block_title'] = sprintf(
-				// translators: %1$s is the shared block title, %2$s is the post title, %3$s is the blog name
+				// translators: 1: is the shared block title, 2: is the post title, 3: is the blog name
 				__( '%1$s - %2$s (Site %3$s)', 'multisite-shared-blocks' ),
 				$data['block_title'],
 				$post_title,
@@ -186,37 +186,37 @@ class SearchRestController extends \WP_REST_Controller {
 			'title'      => 'search-result',
 			'type'       => 'object',
 			'properties' => [
-				'site_id'     => [
+				'site_id'          => [
 					'description' => __( 'Unique identifier of the site where the shared block originated.', 'multisite-shared-blocks' ),
 					'type'        => [ 'integer', 'string' ],
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'post_id'     => [
+				'post_id'          => [
 					'description' => __( 'Unique identifier of the post containing the shared block.', 'multisite-shared-blocks' ),
 					'type'        => [ 'integer', 'string' ],
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'post_type'   => [
+				'post_type'        => [
 					'description' => __( 'Type of post where the shared block is contain.', 'multisite-shared-blocks' ),
 					'type'        => [ 'string' ],
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'post_title'  => [
+				'post_title'       => [
 					'description' => __( 'Title of post where the shared block is contain.', 'multisite-shared-blocks' ),
 					'type'        => [ 'string' ],
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'block_id'    => [
+				'block_id'         => [
 					'description' => __( 'Unique identifier of the shared block.', 'multisite-shared-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'block_title' => [
+				'block_title'      => [
 					'description' => __( 'Title of the shared block.', 'multisite-shared-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
