@@ -1,6 +1,7 @@
 /.git export-ignore
 /.github export-ignore
 /.wordpress-org export-ignore
+/config export-ignore
 /tests export-ignore
 /vendor/ export-ignore
 /node_modules export-ignore
@@ -12,6 +13,7 @@
 /CHANGELOG.md export-ignore
 /composer.json export-ignore
 /composer.lock export-ignore
+/grumphp.yml export-ignore
 /LICENSE.md export-ignore
 /package.json export-ignore
 /package-lock.json export-ignore
