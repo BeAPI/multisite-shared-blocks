@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Multisite Shared Blocks
- * Plugin URI: https://beapi.fr
+ * Plugin URI: https://github.com/BeAPI/multisite-shared-blocks
  * Description: Share blocks between network's sites.
  * Version: 1.0.0
  * Requires at least: 5.9
