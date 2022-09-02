@@ -17,7 +17,7 @@ final class Query {
 	/**
 	 * @var int
 	 */
-	private $total   = 0;
+	private $total = 0;
 
 	/**
 	 * @var array
@@ -117,7 +117,7 @@ final class Query {
 				}
 
 				//phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				$search_condition .= $wpdb->prepare(
+				$search_condition .= (string) $wpdb->prepare(
 					" (({$wpdb->$table_name}.post_title LIKE %s) OR ({$wpdb->$table_name}.block_title LIKE %s))",
 					'%' . $wpdb->esc_like( $term ) . '%',
 					'%' . $wpdb->esc_like( $term ) . '%'
@@ -143,7 +143,7 @@ final class Query {
 			 *
 			 * Output will be : `value1, value2, ... valueN`
 			 */
-			$site_in     = "'";
+			$site_in      = "'";
 			$site_in     .= implode( "', '", array_map( 'esc_sql', $site_ids ) ); // escape values and join them
 			$site_in     .= "'";
 			$query_where .= " AND {$wpdb->$table_name}.site_id IN ($site_in)";
@@ -162,7 +162,7 @@ final class Query {
 			 *
 			 * Output will be : `value1, value2, ... valueN`
 			 */
-			$post_in     = "'";
+			$post_in      = "'";
 			$post_in     .= implode( "', '", array_map( 'esc_sql', $post_ids ) ); // escape values and join them
 			$post_in     .= "'";
 			$query_where .= " AND {$wpdb->$table_name}.post_id IN ($post_in)";
@@ -178,7 +178,7 @@ final class Query {
 			 *
 			 * Output will be : `value1, value2, ... valueN`
 			 */
-			$ptype_in    = "'";
+			$ptype_in     = "'";
 			$ptype_in    .= implode( "', '", array_map( 'esc_sql', $ptype ) ); // escape values and join them
 			$ptype_in    .= "'";
 			$query_where .= " AND {$wpdb->$table_name}.post_type IN ($ptype_in)";
