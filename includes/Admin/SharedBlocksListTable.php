@@ -237,8 +237,8 @@ class SharedBlocksListTable extends \WP_List_Table {
 					add_query_arg(
 						[
 							'TB_iframe' => true,
-							'width'     => 850,
-							'height'    => 500,
+							'width'     => 870,
+							'height'    => 520,
 						],
 						Helpers::get_shared_block_preview_link(
 							$item->get_site_id(),

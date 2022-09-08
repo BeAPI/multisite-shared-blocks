@@ -20,8 +20,9 @@ use Beapi\MultisiteSharedBlocks\Helpers;
 	<?php wp_head(); ?>
 </head>
 <body>
+<?php wp_body_open(); ?>
+<div class="shared-block-preview" style="padding: 20px;">
 	<?php
-	wp_body_open();
 	$blocks = parse_blocks(
 		sprintf(
 			'<!-- wp:multisite-shared-blocks/shared-block {"siteId":%s,"postId":%s,"blockId":"%s","blockTitle":""} /-->',
@@ -46,5 +47,7 @@ use Beapi\MultisiteSharedBlocks\Helpers;
 	echo wp_kses_post( $output );
 	remove_filter( 'wp_kses_allowed_html', [ Helpers::class, 'kses_post_iframe_tag' ] );
 	?>
+</div>
+<?php wp_footer(); ?>
 </body>
 </html>
