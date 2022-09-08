@@ -226,4 +226,29 @@ class Helpers {
 
 		return hash_equals( $token, $request_token );
 	}
+
+	/**
+	 * Add iframe tag to the list of allowed tags when using kses with the `post` context.
+	 *
+	 * @param array $tags List of allowed tags and attributes.
+	 * @param string $context Context name.
+	 *
+	 * @return array List of allowed tags and attributes.
+	 */
+	public static function kses_post_iframe_tag( $tags, $context ) {
+		if ( 'post' === $context ) {
+			$tags['iframe'] = [
+				'src'             => true,
+				'height'          => true,
+				'width'           => true,
+				'title'           => true,
+				'allow'           => true,
+				'loading'         => true,
+				'frameborder'     => true,
+				'allowfullscreen' => true,
+			];
+		}
+
+		return $tags;
+	}
 }

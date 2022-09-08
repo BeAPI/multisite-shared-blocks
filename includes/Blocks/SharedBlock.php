@@ -126,7 +126,16 @@ final class SharedBlock {
 				);
 			}
 
-			return $block_data['html'];
+			/**
+			 * Ensure Shared block output only contain allowed HTML tags and attributes.
+			 *
+			 * Since the shortcodes and embed from the original source have already been processed, we temporarily allow
+			 * the `iframe` tag in the output.
+			 */
+			add_filter( 'wp_kses_allowed_html', [ Helpers::class, 'kses_post_iframe_tag' ], 10, 2 );
+			$html = wp_kses_post( $block_data['html'] );
+			remove_filter( 'wp_kses_allowed_html', [ Helpers::class, 'kses_post_iframe_tag' ] );
+			return $html;
 		}
 
 		// When displaying excerpt content, prepare excerpt content and return the custom view.

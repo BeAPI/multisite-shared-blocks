@@ -10,6 +10,9 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
+
+use Beapi\MultisiteSharedBlocks\Helpers;
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -33,8 +36,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 		$output .= render_block( $block );
 	}
 
-	echo $output; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	wp_footer();
+	/**
+	 * Ensure Shared block output only contain allowed HTML tags and attributes.
+	 *
+	 * Since the shortcodes and embed from the original source have already been processed, we temporarily allow
+	 * the `iframe` tag in the output.
+	 */
+	add_filter( 'wp_kses_allowed_html', [ Helpers::class, 'kses_post_iframe_tag' ], 10, 2 );
+	echo wp_kses_post( $output );
+	remove_filter( 'wp_kses_allowed_html', [ Helpers::class, 'kses_post_iframe_tag' ] );
 	?>
 </body>
 </html>
