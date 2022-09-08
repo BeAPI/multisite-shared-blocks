@@ -2,7 +2,7 @@
 Contributors: beapi, momo360modena, rahe, asadowski10
 Tags: network, multisite, block, share, gutenberg
 Requires at least: 5.9
-Tested up to: 6.1
+Tested up to: 6.0
 Stable tag: 1.0.0
 Requires PHP: 7.2
 License: GPL v2 or later
