@@ -47,7 +47,7 @@ class SharedBlocksListTable extends \WP_List_Table {
 		$query = new Query(
 			[
 				'per_page' => $per_page,
-				's'        => $_GET['s'] ?? '',
+				's'        => isset( $_GET['s'] ) ? sanitize_text_field( $_GET['s'] ) : '',
 				'site__in' => isset( $_GET['on_current_site'] ) ? get_current_blog_id() : '',
 			]
 		);

@@ -35,8 +35,8 @@ class Preview {
 
 		$site_id       = (int) ( $_GET['site_id'] ?? 0 );
 		$post_id       = (int) ( $_GET['post_id'] ?? 0 );
-		$block_id      = (string) ( $_GET['block_id'] ?? '' );
-		$request_token = (string) ( $_GET['token'] ?? '' );
+		$block_id      = isset( $_GET['block_id'] ) ? sanitize_text_field( (string) $_GET['block_id'] ) : '';
+		$request_token = isset( $_GET['token'] ) ? sanitize_text_field( (string) $_GET['token'] ) : '';
 		//phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		if ( 0 === $site_id || 0 === $post_id || '' === $block_id || '' === $request_token ) {
