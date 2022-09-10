@@ -121,7 +121,21 @@ final class SharedBlock {
 				add_action(
 					$action_hook_name,
 					function () use ( $block_support_styles ) {
-						echo $block_support_styles; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						$block_support_styles = preg_replace(
+							'@<(script)[^>]*?>.*?</\\1>@si',
+							'',
+							$block_support_styles
+						);
+						echo wp_kses(
+							$block_support_styles,
+							[
+								'style' => [
+									'nonce' => true,
+									'media' => true,
+									'title' => true,
+								],
+							]
+						);
 					}
 				);
 			}
