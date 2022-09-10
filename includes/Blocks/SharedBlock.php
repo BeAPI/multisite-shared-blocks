@@ -146,8 +146,9 @@ final class SharedBlock {
 			 * Since the shortcodes and embed from the original source have already been processed, we temporarily allow
 			 * the `iframe` tag in the output.
 			 */
+			$html = preg_replace( '@<(script)[^>]*?>.*?</\\1>@si', '', $block_data['html'] );
 			add_filter( 'wp_kses_allowed_html', [ Helpers::class, 'kses_post_iframe_tag' ], 10, 2 );
-			$html = wp_kses_post( $block_data['html'] );
+			$html = wp_kses_post( $html );
 			remove_filter( 'wp_kses_allowed_html', [ Helpers::class, 'kses_post_iframe_tag' ] );
 			return $html;
 		}
