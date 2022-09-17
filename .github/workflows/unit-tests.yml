@@ -1,0 +1,43 @@
+name: Unit Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+# Cancels all previous workflow runs for pull requests that have not completed.
+concurrency:
+  # The concurrency group contains the workflow name and the branch name for pull requests
+  # or the commit hash for any other events.
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  unit-php:
+    name: PHP
+    runs-on: ubuntu-latest
+    if: ${{ github.repository == 'BeAPI/multisite-shared-blocks' || github.event_name == 'pull_request' }}
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+      - name: Npm install and build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install WordPress
+        run: |
+          npm run env:start
+
+      - name: Run unit tests
+        run: npm run test:php
+        if: ${{ success() || failure() }}
