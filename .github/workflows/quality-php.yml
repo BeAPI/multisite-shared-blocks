@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
     checks:
-        name: PHP Quality Checks
+        name: Codesniffer
         runs-on: ubuntu-latest
         if: ${{ github.repository == 'BeAPI/multisite-shared-blocks' || github.event_name == 'pull_request' }}
 
