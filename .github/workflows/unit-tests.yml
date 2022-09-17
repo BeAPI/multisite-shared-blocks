@@ -29,6 +29,17 @@ jobs:
           node-version-file: '.nvmrc'
           cache: npm
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.2
+          extensions: mbstring, intl
+
+      - name: Install composer dependencies
+        run: |
+          composer validate
+          composer install
+
       - name: Npm install and build
         run: |
           npm ci
