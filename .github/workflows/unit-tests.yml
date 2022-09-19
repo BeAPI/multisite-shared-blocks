@@ -45,9 +45,7 @@ jobs:
           npm run build
 
       - name: Install WordPress
-        run: |
-          npm run env:start
+        run: npm run env:start
 
       - name: Run unit tests
         run: npm run test:php
-        if: ${{ success() || failure() }}
