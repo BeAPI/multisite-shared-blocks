@@ -6,7 +6,7 @@ import { assign, isEmpty } from 'lodash';
 /**
  * Internal dependencies
  */
-import { blockSupportSharing, getBlockSharingAttributs } from './helper';
+import { blockSupportSharing, getBlockSharingAttributes } from './helper';
 
 /**
  * Merge our custom attributes with existing attributes of the block type.
@@ -19,7 +19,7 @@ import { blockSupportSharing, getBlockSharingAttributs } from './helper';
  * @return {any} New settings with the custom attributes for sharing.
  */
 const registerSharedBlockAttributes = ( settings, name ) => {
-	const sharedBlockAttributes = getBlockSharingAttributs();
+	const sharedBlockAttributes = getBlockSharingAttributes();
 
 	if ( ! blockSupportSharing( name ) || isEmpty( sharedBlockAttributes ) ) {
 		return settings;

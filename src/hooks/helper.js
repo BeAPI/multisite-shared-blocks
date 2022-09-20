@@ -17,6 +17,6 @@ export function blockSupportSharing( blockName ) {
  *
  * @return {Object} Custom attributes for the sharing functionality.
  */
-export function getBlockSharingAttributs() {
+export function getBlockSharingAttributes() {
 	return multisiteSharedBlocksHooksData.attributes || {};
 }
