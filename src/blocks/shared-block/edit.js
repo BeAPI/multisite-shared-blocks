@@ -25,7 +25,7 @@ import SharedBlocksSelector from './sharedBlocksSelector';
 import './editor.scss';
 
 export default function Edit( { attributes, setAttributes } ) {
-	const { siteId, postId, blockId, blockTitle, display } = attributes;
+	const { blockId, blockTitle, display } = attributes;
 
 	const [ isEditing, setIsEditing ] = useState( false );
 

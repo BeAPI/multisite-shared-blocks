@@ -22,10 +22,13 @@ import { __, sprintf } from '@wordpress/i18n';
 const SEARCH_ENDPOINT = '/multisite-shared-blocks/v1/search';
 
 /**
+ * Do search request.
+ *
+ * Build and send request to the shared blocks search endpoint.
  *
  * @param {Object} params
  * @param {AbortController} controller
- * @returns {Promise<*[]>}
+ * @return {Promise<*[]>} Search request promise.
  */
 function makeRequest( params, controller ) {
 	const path = addQueryArgs( SEARCH_ENDPOINT, {
@@ -102,7 +105,7 @@ export default function SharedBlocksSelector( { onItemSelect } ) {
 	/**
 	 * Update the site id param in the query.
 	 *
-	 * @param {int} site
+	 * @param {number} site
 	 */
 	const setSite = ( site ) => {
 		setQuery( { ...query, site } );
@@ -136,15 +139,15 @@ export default function SharedBlocksSelector( { onItemSelect } ) {
 	/**
 	 * Fetch results for the query.
 	 *
-	 * @param {object} params
+	 * @param {Object} params
 	 * @param {?AbortController} controller
 	 */
 	const searchBlock = ( params, controller ) => {
-		let query = {
+		const searchQuery = {
 			...params,
 			page: currentPage,
 		};
-		makeRequest( query, controller )
+		makeRequest( searchQuery, controller )
 			.then( ( blocks ) => {
 				// Handle case where we don't have results and the request returned no results.
 				// In that case we want to display the "No Results" state.
@@ -205,7 +208,7 @@ export default function SharedBlocksSelector( { onItemSelect } ) {
 							...availableSitesOptions,
 						] }
 						onChange={ ( value ) => {
-							let site = '0' !== value ? +value : 0;
+							const site = '0' !== value ? +value : 0;
 							setSite( site );
 						} }
 					/>
@@ -225,7 +228,7 @@ export default function SharedBlocksSelector( { onItemSelect } ) {
 							...availablePostTypesOptions,
 						] }
 						onChange={ ( value ) => {
-							let postType = '0' !== value ? value : '';
+							const postType = '0' !== value ? value : '';
 							setPostType( postType );
 						} }
 					/>
@@ -252,10 +255,14 @@ export default function SharedBlocksSelector( { onItemSelect } ) {
 					>
 						{ results.map( ( result ) => {
 							return (
-								<div className={ 'results__item' }>
+								<div
+									key={ result.id }
+									className={ 'results__item' }
+								>
 									<Button
 										variant={ 'link' }
 										label={ sprintf(
+											//translators: %s shared block title
 											__(
 												'Select block "%s"',
 												'multisite-shared-blocks'

@@ -83,7 +83,7 @@ class QueryTest extends \WP_UnitTestCase_Base {
 
 		$query = new Query(
 			[
-				'site__in' => [1, 2],
+				'site__in' => [ 1, 2 ],
 			]
 		);
 		$sql   = $wpdb->remove_placeholder_escape( $query->get_request() );

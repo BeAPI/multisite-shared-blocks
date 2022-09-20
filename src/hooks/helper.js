@@ -4,7 +4,7 @@
  * Check if current block is excluded from sharing.
  *
  * @param {string} blockName
- * @returns {boolean}
+ * @return {boolean} True if the block type support sharing, false otherwise.
  */
 export function blockSupportSharing( blockName ) {
 	const excludedBlocks = multisiteSharedBlocksHooksData.excluded_blocks ?? [];
@@ -15,7 +15,7 @@ export function blockSupportSharing( blockName ) {
 /**
  * Get custom attributes for the sharing functionality.
  *
- * @returns {object}
+ * @return {Object} Custom attributes for the sharing functionality.
  */
 export function getBlockSharingAttributs() {
 	return multisiteSharedBlocksHooksData.attributes || {};

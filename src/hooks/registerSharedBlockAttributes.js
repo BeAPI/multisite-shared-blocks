@@ -14,9 +14,9 @@ import { blockSupportSharing, getBlockSharingAttributs } from './helper';
  * Since we need to keep our custom attributes in sync between PHP and JS, we inject them in the page in a custom
  * variable `multisiteSharedBlocksGutenbergData`.
  *
- * @param settings
- * @param name
- * @returns {any}
+ * @param {Object} settings
+ * @param {string} name
+ * @return {any} New settings with the custom attributes for sharing.
  */
 const registerSharedBlockAttributes = ( settings, name ) => {
 	const sharedBlockAttributes = getBlockSharingAttributs();

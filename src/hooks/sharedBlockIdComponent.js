@@ -19,18 +19,14 @@ import { blockSupportSharing } from './helper';
  */
 const sharedBlockIdComponent = createHigherOrderComponent( ( BlockEdit ) => {
 	return class extends Component {
-		constructor() {
-			super( ...arguments );
-		}
-
 		componentDidMount() {
 			const {
 				name,
 				setAttributes,
 				attributes: { sharedBlockId } = false,
 			} = this.props;
-			if ( blockSupportSharing( name ) ) {
-				sharedBlockId || setAttributes( { sharedBlockId: uuidv4() } );
+			if ( blockSupportSharing( name ) && ! sharedBlockId ) {
+				setAttributes( { sharedBlockId: uuidv4() } );
 			}
 		}
 
