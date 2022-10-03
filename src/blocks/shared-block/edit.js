@@ -141,7 +141,7 @@ export default function Edit( { attributes, setAttributes } ) {
 			) : (
 				<Placeholder
 					icon={ BlockIcon }
-					label="Bloc partagé"
+					label={ __( 'Shared Block', 'multisite-shared-blocks' ) }
 					instructions={ getPlaceholderLabel( display ) }
 					className={ 'shared-block-placeholder' }
 				>
