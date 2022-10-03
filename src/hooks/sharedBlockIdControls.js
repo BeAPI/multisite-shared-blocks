@@ -9,7 +9,6 @@ import { isEmpty } from 'lodash';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, TextControl, ToggleControl } from '@wordpress/components';
-import { share } from '@wordpress/icons';
 import { count } from '@wordpress/wordcount';
 import { __, sprintf } from '@wordpress/i18n';
 import { createInterpolateElement } from '@wordpress/element';
@@ -18,6 +17,7 @@ import { createInterpolateElement } from '@wordpress/element';
  * Internal dependencies
  */
 import { blockSupportSharing } from './helper';
+import { default as BlockIcon } from '../blocks/shared-block/icon';
 
 /**
  * Custom wrapper component use to render the UI for sharing a block.
@@ -69,7 +69,7 @@ const sharedBlockIdControls = createHigherOrderComponent( ( BlockEdit ) => {
 							'Multisite sharing options',
 							'multisite-shared-blocks'
 						) }
-						icon={ share }
+						icon={ BlockIcon }
 					>
 						<ToggleControl
 							label={ __(

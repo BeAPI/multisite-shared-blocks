@@ -14,13 +14,13 @@ import {
 	PanelBody,
 	Placeholder,
 } from '@wordpress/components';
-import { share } from '@wordpress/icons';
 import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import SharedBlocksSelector from './sharedBlocksSelector';
+import { default as BlockIcon } from './icon';
 
 import './editor.scss';
 
@@ -140,7 +140,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				</div>
 			) : (
 				<Placeholder
-					icon={ share }
+					icon={ BlockIcon }
 					label="Bloc partagé"
 					instructions={ getPlaceholderLabel( display ) }
 					className={ 'shared-block-placeholder' }
