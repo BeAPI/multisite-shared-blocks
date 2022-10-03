@@ -31,7 +31,7 @@ define( 'MULTISITE_SHARED_BLOCKS_VIEWS_FOLDER_NAME', 'multisite-shared-blocks' )
 // Plugin URL and PATH
 define( 'MULTISITE_SHARED_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
 define( 'MULTISITE_SHARED_BLOCKS_DIR', plugin_dir_path( __FILE__ ) );
-define( 'MULTISITE_SHARED_BLOCKS_PLUGIN_DIRNAME', basename( rtrim( dirname( __FILE__ ), '/' ) ) );
+define( 'MULTISITE_SHARED_BLOCKS_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
 register_activation_hook( __FILE__, [ \Beapi\MultisiteSharedBlocks\Plugin::class, 'activate' ] );
 

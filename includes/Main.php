@@ -24,6 +24,6 @@ class Main {
 	 */
 	public function init_translations(): void {
 		// Load translations
-		load_plugin_textdomain( 'multisite-shared-blocks', false, MULTISITE_SHARED_BLOCKS_PLUGIN_DIRNAME . '/languages' );
+		load_plugin_textdomain( 'multisite-shared-blocks', false, sprintf( '%s/languages', dirname( MULTISITE_SHARED_BLOCKS_PLUGIN_BASENAME ) ) );
 	}
 }
