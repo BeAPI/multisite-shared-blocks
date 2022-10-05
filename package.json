@@ -14,6 +14,7 @@
     "env:start": "wp-env start",
     "env:stop": "wp-env stop",
     "env:reset": "wp-env clean",
+    "env:destroy": "wp-env destroy",
     "env:install": "wp-env run cli \"wp db reset --yes\" && wp-env run cli \"wp core multisite-install --title='Multisite Shared Blocks' --admin_user='admin' --admin_password='password' --admin_email='user@example.com'\" && wp-env run cli \"wp plugin activate multisite-shared-blocks --network\" && wp-env run cli \"wp site create --slug=site-one\"",
     "env:cli": "wp-env run cli",
     "pretest:php": "wp-env start",
