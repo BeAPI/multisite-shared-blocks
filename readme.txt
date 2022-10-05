@@ -1,5 +1,5 @@
 === Multisite Shared Blocks ===
-Contributors: beapi, momo360modena, rahe, asadowski10
+Contributors: beapi, momo360modena, rahe, asadowski10, petitphp
 Tags: network, multisite, block, share, gutenberg
 Requires at least: 5.9
 Tested up to: 6.0
