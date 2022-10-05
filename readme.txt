@@ -16,6 +16,14 @@ Share blocks between network's sites.
 
 This plugin allow contributors to share blocks from posts on the network. Other contributors can embed a view of each shared blocks on other sites of the network.
 
+== Screenshots ==
+1. Share any block with other site of a network
+2. Use the dedicated block to view all shared blocks and select one to embed in the content
+3. Placeholder for the shared block
+4. Shared block is rendered within the content
+5. Admin page to view all shared block and where they come from
+6. Preview the shared block in the admin before using them
+
 == Changelog ==
 
 = 1.0.0 - 2022-09-02 =
