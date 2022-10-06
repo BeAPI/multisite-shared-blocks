@@ -3,10 +3,10 @@
   "config": {
     "APACHE_PORT": 8888
   },
+  "plugins": ["."],
   "mappings": {
     "./.htaccess": "./config/wordpress/.htaccess",
-    "wp-content/mu-plugins/ms-custom-ports.php": "./config/mu-plugins/ms-custom-ports.php",
-    "wp-content/plugins/multisite-shared-blocks": "."
+    "wp-content/mu-plugins": "./config/mu-plugins"
   },
   "env": {
     "tests": {
