@@ -10,6 +10,7 @@
 .gitattributes
 .gitignore
 .nvmrc
+.plugin-data
 .wp-env.json
 CHANGELOG.md
 composer.json
