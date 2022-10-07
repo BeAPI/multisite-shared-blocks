@@ -1,6 +1,6 @@
 {
   "name": "multisite-shared-blocks",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Share blocks between network's sites.",
   "main": "build/index.js",
   "scripts": {
