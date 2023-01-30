@@ -8,6 +8,7 @@
     <!-- Scan all files in directory -->
     <file>multisite-shared-blocks.php</file>
     <file>./includes/</file>
+    <file>./tests/</file>
     <file>./views/</file>
 
     <exclude-pattern>./build/</exclude-pattern>
