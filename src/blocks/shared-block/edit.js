@@ -142,9 +142,9 @@ export default function Edit( { attributes, setAttributes } ) {
 				<Placeholder
 					icon={ BlockIcon }
 					label={ __( 'Shared Block', 'multisite-shared-blocks' ) }
-					instructions={ getPlaceholderLabel( display ) }
 					className={ 'shared-block-placeholder' }
 				>
+					{ getPlaceholderLabel( display ) }
 					<Button
 						variant="primary"
 						onClick={ () => setIsEditing( true ) }
