@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import { isEmpty } from 'lodash';
-
-/**
  * WordPress dependencies
  */
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
@@ -26,6 +21,7 @@ import './editor.scss';
 
 export default function Edit( { attributes, setAttributes } ) {
 	const { blockId, blockTitle, display } = attributes;
+	const hasBlockId = ( blockId && blockId.length ) > 0 ? true : false;
 
 	const [ isEditing, setIsEditing ] = useState( false );
 
@@ -98,9 +94,9 @@ export default function Edit( { attributes, setAttributes } ) {
 					</ButtonGroup>
 				</PanelBody>
 			</InspectorControls>
-			{ isEmpty( blockId ) || isEditing ? (
+			{ ! hasBlockId || isEditing ? (
 				<div className={ 'shared-block-selector-wrapper' }>
-					{ false === isEmpty( blockId ) && (
+					{ ! hasBlockId && (
 						<div
 							className={
 								'shared-block-selector-wrapper__cancel'

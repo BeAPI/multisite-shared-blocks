@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import { isEmpty } from 'lodash';
-
-/**
  * WordPress dependencies
  */
 import { createHigherOrderComponent } from '@wordpress/compose';
@@ -27,6 +22,8 @@ const sharedBlockIdControls = createHigherOrderComponent( ( BlockEdit ) => {
 		const { name, attributes, setAttributes } = props;
 		const { sharedBlockId, sharedBlockIsShared, sharedBlockShareTitle } =
 			attributes;
+		const hasShareTitle =
+			sharedBlockShareTitle && sharedBlockShareTitle > 0 ? true : false;
 
 		const getEmptySharedBlockTitle = () => {
 			return sprintf(
@@ -45,7 +42,7 @@ const sharedBlockIdControls = createHigherOrderComponent( ( BlockEdit ) => {
 		};
 
 		const getTitleCharCount = ( title ) => {
-			if ( isEmpty( title ) ) {
+			if ( ! hasShareTitle ) {
 				return '0';
 			}
 
@@ -105,7 +102,7 @@ const sharedBlockIdControls = createHigherOrderComponent( ( BlockEdit ) => {
 										'multisite-shared-blocks'
 									) }
 								/>
-								{ isEmpty( sharedBlockShareTitle ) && (
+								{ ! hasShareTitle && (
 									<p>
 										<small>
 											{ createInterpolateElement(
