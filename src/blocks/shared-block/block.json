@@ -2,7 +2,7 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
 	"name": "multisite-shared-blocks/shared-block",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"title": "Shared Block",
 	"category": "design",
 	"description": "",

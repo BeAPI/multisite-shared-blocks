@@ -2,8 +2,8 @@
 Contributors: beapi, momo360modena, rahe, asadowski10, petitphp
 Tags: network, multisite, block, share, gutenberg
 Requires at least: 5.9
-Tested up to: 6.0
-Stable tag: 1.0.1
+Tested up to: 6.4
+Stable tag: 1.1.0
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -25,6 +25,11 @@ This plugin allow contributors to share blocks from posts on the network. Other 
 6. Preview the shared block in the admin before using them
 
 == Changelog ==
+
+= 1.1.0 - 2023-11-21 =
+* Fix case where wpautop could be applyied more than one time on content
+* Fix errors with WP 6.4
+* Remove lodash usage
 
 = 1.0.1 - 2022-10-07 =
 * Add check for multisite installation
