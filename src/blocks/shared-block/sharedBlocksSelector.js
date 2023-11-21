@@ -1,4 +1,5 @@
 /* global multisiteSharedBlocksEditorData */
+/* eslint-disable jsdoc/check-line-alignment */
 
 /**
  * External dependencies

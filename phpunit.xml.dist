@@ -8,6 +8,7 @@
         convertDeprecationsToExceptions="true"
 >
     <php>
+        <const name="WP_TESTS_MULTISITE" value="1" />
         <env name="WORDPRESS_TABLE_PREFIX" value="wptests_" />
     </php>
     <testsuites>

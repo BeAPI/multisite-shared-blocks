@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import { assign, isEmpty } from 'lodash';
-
-/**
  * Internal dependencies
  */
 import { blockSupportSharing, getBlockSharingAttributes } from './helper';
@@ -21,13 +16,20 @@ import { blockSupportSharing, getBlockSharingAttributes } from './helper';
 const registerSharedBlockAttributes = ( settings, name ) => {
 	const sharedBlockAttributes = getBlockSharingAttributes();
 
-	if ( ! blockSupportSharing( name ) || isEmpty( sharedBlockAttributes ) ) {
+	if (
+		! blockSupportSharing( name ) ||
+		Object.keys( sharedBlockAttributes ).length === 0
+	) {
 		return settings;
 	}
 
-	return assign( {}, settings, {
-		attributes: assign( {}, settings.attributes, sharedBlockAttributes ),
-	} );
+	return {
+		...settings,
+		attributes: {
+			...settings.attributes,
+			...sharedBlockAttributes,
+		},
+	};
 };
 
 export default registerSharedBlockAttributes;

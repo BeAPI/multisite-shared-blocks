@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import { isEmpty } from 'lodash';
-
-/**
  * WordPress dependencies
  */
 import { createHigherOrderComponent } from '@wordpress/compose';
@@ -27,6 +22,10 @@ const sharedBlockIdControls = createHigherOrderComponent( ( BlockEdit ) => {
 		const { name, attributes, setAttributes } = props;
 		const { sharedBlockId, sharedBlockIsShared, sharedBlockShareTitle } =
 			attributes;
+		const hasShareTitle =
+			sharedBlockShareTitle && sharedBlockShareTitle.length > 0
+				? true
+				: false;
 
 		const getEmptySharedBlockTitle = () => {
 			return sprintf(
@@ -45,15 +44,11 @@ const sharedBlockIdControls = createHigherOrderComponent( ( BlockEdit ) => {
 		};
 
 		const getTitleCharCount = ( title ) => {
-			if ( isEmpty( title ) ) {
-				return '0';
+			if ( title && title.length > 0 ) {
+				return count( title, 'characters_including_spaces', {} );
 			}
 
-			return count(
-				sharedBlockShareTitle,
-				'characters_including_spaces',
-				{}
-			);
+			return 0;
 		};
 
 		if ( ! blockSupportSharing( name ) ) {
@@ -94,9 +89,11 @@ const sharedBlockIdControls = createHigherOrderComponent( ( BlockEdit ) => {
 											'Public title for the shared block (%d/200)',
 											'multisite-shared-blocks'
 										),
-										getTitleCharCount(
-											sharedBlockShareTitle
-										)
+										hasShareTitle
+											? getTitleCharCount(
+													sharedBlockShareTitle
+											  )
+											: 0
 									) }
 									value={ sharedBlockShareTitle }
 									onChange={ ( value ) => setTitle( value ) }
@@ -105,7 +102,7 @@ const sharedBlockIdControls = createHigherOrderComponent( ( BlockEdit ) => {
 										'multisite-shared-blocks'
 									) }
 								/>
-								{ isEmpty( sharedBlockShareTitle ) && (
+								{ ! hasShareTitle && (
 									<p>
 										<small>
 											{ createInterpolateElement(
