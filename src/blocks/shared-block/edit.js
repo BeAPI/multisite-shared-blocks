@@ -21,7 +21,7 @@ import './editor.scss';
 
 export default function Edit( { attributes, setAttributes } ) {
 	const { blockId, blockTitle, display } = attributes;
-	const hasBlockId = ( blockId && blockId.length ) > 0 ? true : false;
+	const hasBlockId = blockId && blockId.length > 0 ? true : false;
 
 	const [ isEditing, setIsEditing ] = useState( false );
 
@@ -96,7 +96,7 @@ export default function Edit( { attributes, setAttributes } ) {
 			</InspectorControls>
 			{ ! hasBlockId || isEditing ? (
 				<div className={ 'shared-block-selector-wrapper' }>
-					{ ! hasBlockId && (
+					{ hasBlockId && (
 						<div
 							className={
 								'shared-block-selector-wrapper__cancel'
