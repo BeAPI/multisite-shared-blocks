@@ -15,8 +15,16 @@ concurrency:
 
 jobs:
   unit-php:
-    name: PHP
+    name: Unit tests on PHP ${{ matrix.php }}
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [ '7.2', '7.3', '7.4', '8.0', '8.1', '8.2' ]
+
+    env:
+      WP_ENV_PHP_VERSION: ${{ matrix.php }}
 
     steps:
       - name: Checkout project
@@ -31,13 +39,19 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.2
+          php-version: '${{ matrix.php }}'
           extensions: mbstring, intl
 
-      - name: Install composer dependencies
+      # Ensure that Composer installs the correct versions of packages.
+      - name: Override PHP version in composer.json
         run: |
-          composer validate
-          composer install
+          composer config platform.php '${{ matrix.php }}.99'
+          composer require "composer/installers:^2.0" --no-update
+
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@v2
+        with:
+          dependency-versions: 'highest'
 
       - name: Npm install and build
         run: |

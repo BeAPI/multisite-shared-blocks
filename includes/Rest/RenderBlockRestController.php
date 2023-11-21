@@ -100,7 +100,7 @@ class RenderBlockRestController extends \WP_REST_Controller {
 		$this->setup_block_support_styles_capture();
 
 		/** This filter is documented in wp-includes/post-template.php */
-		$block_render = apply_filters( 'the_content', render_block( $shared_block_data ) );
+		$block_render = apply_filters( 'the_content', serialize_block( $shared_block_data ) );
 
 		// Get list of block types used while rendering the shared block.
 		$use_block_types = $this->capture_use_block_types();
