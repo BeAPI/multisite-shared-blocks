@@ -3,7 +3,7 @@
  * Plugin Name: Multisite Shared Blocks
  * Plugin URI: https://github.com/BeAPI/multisite-shared-blocks
  * Description: Share blocks between network's sites.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Requires at least: 5.9
  * Requires PHP: 7.2
  * Author: Be API Technical team
@@ -31,7 +31,7 @@ if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
 }
 
 // Plugin constants
-define( 'MULTISITE_SHARED_BLOCKS_VERSION', '1.1.0' );
+define( 'MULTISITE_SHARED_BLOCKS_VERSION', '1.1.1' );
 define( 'MULTISITE_SHARED_BLOCKS_CACHE_VERSION', '1' );
 define( 'MULTISITE_SHARED_BLOCKS_VIEWS_FOLDER_NAME', 'multisite-shared-blocks' );
 
