@@ -68,7 +68,7 @@ jobs:
           git config --local user.name "$(git log --format='%an' HEAD^!)"
 
           echo "Creating branch"
-          git checkout -b release/{$VERSION}
+          git checkout -b release/${VERSION}
 
           echo "Creating tag ${VERSION}"
           git add .
