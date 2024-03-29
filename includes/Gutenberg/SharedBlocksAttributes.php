@@ -99,6 +99,9 @@ final class SharedBlocksAttributes {
 			true
 		);
 
+		// Load translations.
+		wp_set_script_translations( self::SHARED_BLOCK_SCRIPT_HANDLE, 'multisite-shared-blocks' );
+
 		// Register additional configuration data for the script to be print before the script tag.
 		wp_add_inline_script(
 			self::SHARED_BLOCK_SCRIPT_HANDLE,
