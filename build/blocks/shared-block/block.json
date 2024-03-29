@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "multisite-shared-blocks/shared-block",
+  "version": "1.1.1",
+  "title": "Shared Block",
+  "category": "design",
+  "description": "",
+  "icon": "share",
+  "supports": {
+    "html": false
+  },
+  "attributes": {
+    "siteId": {
+      "type": "integer"
+    },
+    "postId": {
+      "type": "integer"
+    },
+    "blockId": {
+      "type": "string"
+    },
+    "blockTitle": {
+      "type": "string"
+    },
+    "display": {
+      "type": "string",
+      "enum": [
+        "full",
+        "excerpt"
+      ],
+      "default": "full"
+    }
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "textdomain": "multisite-shared-blocks"
+}
