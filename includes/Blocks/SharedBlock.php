@@ -288,7 +288,20 @@ final class SharedBlock {
 			sprintf( '/multisite-shared-blocks/v1/renderer/%d/%s', $post_id, $block_id )
 		);
 
-		$response = wp_safe_remote_get( $rest_url );
+		// Prepare request arguments
+		$request_args = [];
+		// Add authentication headers if in non-production environment and credentials are defined
+		if ( defined( 'MULTISITE_BLOCKS_AUTH_USER' ) && defined( 'MULTISITE_BLOCKS_AUTH_PWD' ) && ! empty( MULTISITE_BLOCKS_AUTH_USER ) && ! empty( MULTISITE_BLOCKS_AUTH_PWD ) ) {
+			$request_args = [
+				'headers' => [
+					'Authorization' => 'Basic ' . base64_encode( MULTISITE_BLOCKS_AUTH_USER . ':' . MULTISITE_BLOCKS_AUTH_PWD ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+				],
+			];
+		}
+
+		// Make the request with authentication if available
+		$response = wp_safe_remote_get( $rest_url, $request_args );
+
 		if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
 			return $block_data;
 		}
