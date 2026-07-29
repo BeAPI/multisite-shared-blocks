@@ -76,6 +76,8 @@ final class SharedBlock {
 
 		// When displaying full content, just return the rendered content.
 		if ( 'full' === $display ) {
+			$this->enqueue_embedded_block_assets( $block_data['html'] );
+
 			/**
 			 * Filters if dependencies for the blocks contain in the shared block should be enqueued or not on
 			 * the current site.
@@ -328,6 +330,49 @@ final class SharedBlock {
 		BlockDataCache::set( $site_id, $post_id, $block_id, $block_data );
 
 		return $block_data;
+	}
+
+	/**
+	 * Enqueue assets for blocks present in shared HTML.
+	 * This is necessary to ensure that the blocks are styled correctly in the consumer page.
+	 *
+	 * Also enqueues view script modules (`viewScriptModule` / `view_script_module_ids`).
+	 *
+	 * @param string $html Rendered shared block HTML.
+	 *
+	 * @return void
+	 * @author Jules Fell
+	 */
+	private function enqueue_embedded_block_assets( string $html ): void {
+		if ( '' === $html ) {
+			return;
+		}
+
+		foreach ( \WP_Block_Type_Registry::get_instance()->get_all_registered() as $block_type ) {
+			if ( empty( $block_type->name ) ) {
+				continue;
+			}
+
+			// Convert block name to class name.
+			// For example: core/media-text → wp-block-media-text ; beapi/icon-block → wp-block-beapi-icon-block
+			$block_class = 'wp-block-' . preg_replace( '/^core-/', '', str_replace( '/', '-', $block_type->name ) );
+
+			if ( ! str_contains( $html, $block_class ) ) {
+				continue;
+			}
+
+			foreach ( (array) ( $block_type->style_handles ?? [] ) as $handle ) {
+				wp_enqueue_style( $handle );
+			}
+
+			foreach ( (array) ( $block_type->view_script_handles ?? [] ) as $handle ) {
+				wp_enqueue_script( $handle );
+			}
+
+			foreach ( (array) ( $block_type->view_script_module_ids ?? [] ) as $module_id ) {
+				wp_enqueue_script_module( $module_id );
+			}
+		}
 	}
 
 	/**
