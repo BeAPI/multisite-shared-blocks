@@ -76,8 +76,6 @@ final class SharedBlock {
 
 		// When displaying full content, just return the rendered content.
 		if ( 'full' === $display ) {
-			$this->enqueue_embedded_block_assets( $block_data['html'] );
-
 			/**
 			 * Filters if dependencies for the blocks contain in the shared block should be enqueued or not on
 			 * the current site.
@@ -86,25 +84,13 @@ final class SharedBlock {
 			 *
 			 * @param bool $skip_dependencies True to skip enqueuing dependencies. Default to false.
 			 */
-			$skip_dependencies = apply_filters( 'multisite_shared_block_skip_block_dependencies', false );
+			$skip_dependencies = (bool) apply_filters( 'multisite_shared_block_skip_block_dependencies', false );
 
-			$use_block_types = $block_data['use_block_types'] ?? [];
-			$block_registry  = \WP_Block_Type_Registry::get_instance();
-			if ( ! $skip_dependencies && ! empty( $use_block_types ) && null !== $block_registry ) {
-				foreach ( $use_block_types as $block_type_name ) {
-					$block_type = $block_registry->get_registered( $block_type_name );
-					if ( null === $block_type ) {
-						continue;
-					}
-
-					if ( null !== $block_type->script ) {
-						wp_enqueue_script( $block_type->script );
-					}
-
-					if ( null !== $block_type->style ) {
-						wp_enqueue_style( $block_type->style );
-					}
-				}
+			if ( ! $skip_dependencies ) {
+				$this->enqueue_embedded_block_assets(
+					$block_data['use_block_types'] ?? [],
+					$block_data['view_script_module_ids'] ?? []
+				);
 			}
 
 			/**
@@ -268,7 +254,7 @@ final class SharedBlock {
 	 * @param string $block_id block id.
 	 *
 	 * @return array rendered block data.
-	 * @psalm-return array{html: string, use_block_types: string[], block_support_styles:string, post_title:string, post_permalink:string}
+	 * @psalm-return array{html: string, use_block_types: string[], view_script_module_ids: string[], block_support_styles:string, post_title:string, post_permalink:string}
 	 */
 	private function get_rendered_block( int $site_id, int $post_id, string $block_id ): array {
 		// Get data from cache.
@@ -278,11 +264,12 @@ final class SharedBlock {
 		}
 
 		$block_data = [
-			'html'                 => '',
-			'use_block_types'      => [],
-			'block_support_styles' => '',
-			'post_title'           => '',
-			'post_permalink'       => '',
+			'html'                   => '',
+			'use_block_types'        => [],
+			'view_script_module_ids' => [],
+			'block_support_styles'   => '',
+			'post_title'             => '',
+			'post_permalink'         => '',
 		];
 
 		$rest_url = get_rest_url(
@@ -318,11 +305,16 @@ final class SharedBlock {
 
 		$block_data = wp_parse_args(
 			[
-				'html'                 => $parsed_json['rendered'] ?? '',
-				'use_block_types'      => $parsed_json['use_block_types'] ?? [],
-				'block_support_styles' => $parsed_json['block_support_styles'] ?? '',
-				'post_title'           => $parsed_json['post']['title'] ?? '',
-				'post_permalink'       => $parsed_json['post']['link'] ?? '',
+				'html'                   => $parsed_json['rendered'] ?? '',
+				'use_block_types'        => array_values(
+					array_filter( (array) ( $parsed_json['use_block_types'] ?? [] ), 'is_string' )
+				),
+				'view_script_module_ids' => array_values(
+					array_filter( (array) ( $parsed_json['view_script_module_ids'] ?? [] ), 'is_string' )
+				),
+				'block_support_styles'   => $parsed_json['block_support_styles'] ?? '',
+				'post_title'             => $parsed_json['post']['title'] ?? '',
+				'post_permalink'         => $parsed_json['post']['link'] ?? '',
 			],
 			$block_data
 		);
@@ -333,31 +325,27 @@ final class SharedBlock {
 	}
 
 	/**
-	 * Enqueue assets for blocks present in shared HTML.
-	 * This is necessary to ensure that the blocks are styled correctly in the consumer page.
+	 * Enqueue assets for the blocks contain in a shared block.
+	 * This is necessary to ensure that the blocks are styled and behave correctly in the consumer page.
 	 *
-	 * Also enqueues view script modules (`viewScriptModule` / `view_script_module_ids`).
+	 * Block types and script modules are the ones collected by the renderer on the original site, so blocks
+	 * without a default classname are handled and no asset is enqueued for a block type absent from the
+	 * shared content.
 	 *
-	 * @param string $html Rendered shared block HTML.
+	 * @since 1.3.0
+	 *
+	 * @param string[] $use_block_types Block types rendered by the shared block.
+	 * @param string[] $view_script_module_ids Script modules enqueued during the shared block rendering.
 	 *
 	 * @return void
 	 * @author Jules Fell
 	 */
-	private function enqueue_embedded_block_assets( string $html ): void {
-		if ( '' === $html ) {
-			return;
-		}
+	private function enqueue_embedded_block_assets( array $use_block_types, array $view_script_module_ids = [] ): void {
+		$block_registry = \WP_Block_Type_Registry::get_instance();
 
-		foreach ( \WP_Block_Type_Registry::get_instance()->get_all_registered() as $block_type ) {
-			if ( empty( $block_type->name ) ) {
-				continue;
-			}
-
-			// Convert block name to class name.
-			// For example: core/media-text → wp-block-media-text ; beapi/icon-block → wp-block-beapi-icon-block
-			$block_class = 'wp-block-' . preg_replace( '/^core-/', '', str_replace( '/', '-', $block_type->name ) );
-
-			if ( ! str_contains( $html, $block_class ) ) {
+		foreach ( array_unique( $use_block_types ) as $block_type_name ) {
+			$block_type = $block_registry->get_registered( $block_type_name );
+			if ( null === $block_type ) {
 				continue;
 			}
 
@@ -365,14 +353,39 @@ final class SharedBlock {
 				wp_enqueue_style( $handle );
 			}
 
+			foreach ( (array) ( $block_type->script_handles ?? [] ) as $handle ) {
+				wp_enqueue_script( $handle );
+			}
+
 			foreach ( (array) ( $block_type->view_script_handles ?? [] ) as $handle ) {
 				wp_enqueue_script( $handle );
 			}
 
 			foreach ( (array) ( $block_type->view_script_module_ids ?? [] ) as $module_id ) {
-				wp_enqueue_script_module( $module_id );
+				$this->enqueue_script_module( $module_id );
 			}
 		}
+
+		foreach ( array_unique( $view_script_module_ids ) as $module_id ) {
+			$this->enqueue_script_module( $module_id );
+		}
+	}
+
+	/**
+	 * Enqueue a script module if the current WordPress version supports them.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param string $module_id Script module identifier.
+	 *
+	 * @return void
+	 */
+	private function enqueue_script_module( string $module_id ): void {
+		if ( '' === $module_id || ! function_exists( 'wp_enqueue_script_module' ) ) {
+			return;
+		}
+
+		wp_enqueue_script_module( $module_id );
 	}
 
 	/**

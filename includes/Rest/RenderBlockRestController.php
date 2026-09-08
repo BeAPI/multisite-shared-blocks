@@ -23,6 +23,13 @@ class RenderBlockRestController extends \WP_REST_Controller {
 	public $rendered_block_types = [];
 
 	/**
+	 * Store script module ids already enqueued before the rendering of a shared block.
+	 *
+	 * @var string[]
+	 */
+	private $script_module_ids_before_render = [];
+
+	/**
 	 * RenderBlockRestController constructor.
 	 */
 	public function __construct() {
@@ -98,6 +105,7 @@ class RenderBlockRestController extends \WP_REST_Controller {
 
 		$this->setup_use_block_types_capture();
 		$this->setup_block_support_styles_capture();
+		$this->setup_view_script_modules_capture();
 
 		/** This filter is documented in wp-includes/post-template.php */
 		$block_render = apply_filters( 'the_content', serialize_block( $shared_block_data ) );
@@ -107,6 +115,9 @@ class RenderBlockRestController extends \WP_REST_Controller {
 
 		// Get block support styles generated while rendering the shared block.
 		$block_support_styles = $this->capture_block_support_styles();
+
+		// Get script modules enqueued while rendering the shared block.
+		$view_script_module_ids = $this->capture_view_script_modules();
 
 		// Replace dynamically generated container CSS classes in block HML content and CSS rules to avoid collision
 		// with existing rules when embedding the block.
@@ -119,13 +130,14 @@ class RenderBlockRestController extends \WP_REST_Controller {
 		}
 
 		$data = [
-			'post'                 => [
+			'post'                   => [
 				'title' => get_the_title(),
 				'link'  => get_permalink(),
 			],
-			'rendered'             => $block_render,
-			'use_block_types'      => $use_block_types,
-			'block_support_styles' => $block_support_styles,
+			'rendered'               => $block_render,
+			'use_block_types'        => $use_block_types,
+			'view_script_module_ids' => $view_script_module_ids,
+			'block_support_styles'   => $block_support_styles,
 		];
 
 		wp_reset_postdata();
@@ -146,7 +158,7 @@ class RenderBlockRestController extends \WP_REST_Controller {
 			'title'      => 'rendered-shared-block',
 			'type'       => 'object',
 			'properties' => [
-				'post'                 => [
+				'post'                   => [
 					'description' => __( "Original post's data.", 'multisite-shared-blocks' ),
 					'type'        => 'object',
 					'context'     => [ 'view' ],
@@ -166,19 +178,31 @@ class RenderBlockRestController extends \WP_REST_Controller {
 						],
 					],
 				],
-				'rendered'             => [
+				'rendered'               => [
 					'description' => __( "Shared block's HTML content.", 'multisite-shared-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'use_block_types'      => [
+				'use_block_types'        => [
 					'description' => __( 'Block types rendered by the shared block.', 'multisite-shared-blocks' ),
 					'type'        => 'array',
+					'items'       => [
+						'type' => 'string',
+					],
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'block_support_styles' => [
+				'view_script_module_ids' => [
+					'description' => __( 'Script modules enqueued while rendering the shared block.', 'multisite-shared-blocks' ),
+					'type'        => 'array',
+					'items'       => [
+						'type' => 'string',
+					],
+					'context'     => [ 'view' ],
+					'readonly'    => true,
+				],
+				'block_support_styles'   => [
 					'description' => __( "Shared block's inline CSS style.", 'multisite-shared-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
@@ -346,5 +370,72 @@ class RenderBlockRestController extends \WP_REST_Controller {
 	 */
 	private function capture_use_block_types(): array {
 		return array_filter( array_keys( $this->rendered_block_types ) );
+	}
+
+	/**
+	 * Store the script modules already enqueued before the rendering of the shared block.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return void
+	 */
+	private function setup_view_script_modules_capture(): void {
+		$this->script_module_ids_before_render = $this->get_enqueued_script_module_ids();
+	}
+
+	/**
+	 * Return the script modules enqueued during the rendering of the shared block.
+	 *
+	 * Some blocks only enqueue their view script module from their render callback, e.g. `core/file` with the PDF
+	 * preview enabled. Since the consumer site embeds an already rendered HTML, those callbacks never run there and
+	 * the modules must be listed in the response.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return string[]
+	 */
+	private function capture_view_script_modules(): array {
+		return array_values(
+			array_diff( $this->get_enqueued_script_module_ids(), $this->script_module_ids_before_render )
+		);
+	}
+
+	/**
+	 * List the script modules currently marked for enqueue.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return string[]
+	 */
+	private function get_enqueued_script_module_ids(): array {
+		if ( ! function_exists( 'wp_script_modules' ) ) {
+			return [];
+		}
+
+		$script_modules = wp_script_modules();
+
+		// Public accessor available since WP 6.9.
+		if ( method_exists( $script_modules, 'get_queue' ) ) {
+			return $script_modules->get_queue();
+		}
+
+		// Before WP 6.9, the enqueued state is only stored in the private list of registered modules.
+		try {
+			$registered_property = new \ReflectionProperty( $script_modules, 'registered' );
+			$registered_property->setAccessible( true );
+			/** @var array $registered */
+			$registered = (array) $registered_property->getValue( $script_modules );
+		} catch ( \ReflectionException $e ) {
+			return [];
+		}
+
+		$enqueued_module_ids = [];
+		foreach ( $registered as $module_id => $script_module ) {
+			if ( ! empty( $script_module['enqueue'] ) ) {
+				$enqueued_module_ids[] = (string) $module_id;
+			}
+		}
+
+		return $enqueued_module_ids;
 	}
 }
